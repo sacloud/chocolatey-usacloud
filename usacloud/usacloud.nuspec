@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <!-- == PACKAGE SPECIFIC SECTION == -->
+    <id>usacloud</id>
+    <version>__VERSION__</version>
+    <owners>223n (@223n)</owners>
+    <!-- ============================== -->
+
+    <!-- == SOFTWARE SPECIFIC SECTION == -->
+    <title>usacloud (Install)</title>
+    <authors>Kazumichi Yamamoto (@yamamoto-febc)</authors>
+    <projectUrl>https://github.com/sacloud/usacloud</projectUrl>
+    <!--<projectSourceUrl>https://github.com/sacloud/usacloud</projectSourceUrl>-->
+    <iconUrl>https://cdn.rawgit.com/sacloud/images/1fe15a73/usacloud_logo.svg</iconUrl>
+    <copyright>Kazumichi Yamamoto (@yamamoto-febc)</copyright>
+    <licenseUrl>https://github.com/sacloud/usacloud/blob/master/LICENSE.txt</licenseUrl>
+    <docsUrl>https://sacloud.github.io/usacloud//</docsUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <packageSourceUrl>https://github.com/sacloud/chocolatey</packageSourceUrl>
+    <!--<mailingListUrl></mailingListUrl>-->
+    <!--<bugTrackerUrl></bugTrackerUrl>-->
+    <tags>sakuracloud cli</tags>
+    <summary>usacloud</summary>
+    <description>
+# EN
+  - "usacloud" is a CLI client for Sakura Cloud.
+
+## Major features
+  - Following the latest function of "SAKURA Cloud". Billing information, object store, web accelerator, etc. can also be used.
+  - Support for cross-platform version (Windows / macOS / Linux) It can also be executed with ARM.
+  - Single binary implemented in Go language. Installation method is only binary copy. (yum / apt / brew is also supported)
+  - Supports SSH / SCP / SFTP / VNC etc. only with "binary".
+
+----
+
+# JP
+  - "usacloud"は、さくらクラウド用のCLIクライアントです。
+
+## 主な特徴
+  - さくらクラウドの最新機能に追随。請求情報やオブジェクトストレージ、ウェブアクセラレータなども対応済み
+  - クロスプラットフォーム(Windows/macOS/Linux)サポート。ARMでも動作可能。
+  - Go言語で実装されたシングルバイナリ、インストールはバイナリをコピーするだけ(yum/apt/brewもサポート)
+  - SSH/SCP/SFTP/VNCなどをバイナリ単体でサポート
+    </description>
+    <releaseNotes>
+# EN
+  - For details, please check CHANGELOG (Japanese) of GitHub.
+  - https://github.com/sacloud/usacloud/releases
+
+----
+
+# JP
+  - 詳しくは、GitHubのCHANGELOG(日本語)をご確認ください。
+  - https://github.com/sacloud/usacloud/releases
+    </releaseNotes>
+    <!-- =============================== -->      
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
