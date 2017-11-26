@@ -50,7 +50,7 @@ deploy_script:
       $hash64           = (Get-FileHash .\x64.zip -Algorithm SHA512).Hash;
       # Replace vlaues
       Set-Location -Path .\usacloud;
-      (Get-Content '.\usacloud.nuspec' -Raw).Replace("<version>__VERSION__</version>", "<version>$($appVeyorVersion)</version>") | Out-File '.\terraform-provider-sakuracloud.nuspec';
+      (Get-Content '.\usacloud.nuspec' -Raw).Replace("<version>__VERSION__</version>", "<version>$($appVeyorVersion)</version>") | Out-File '.\usacloud.nuspec';
       (Get-Content '.\tools\chocolateyinstall.ps1' -Raw).Replace("__VERSION__", "v$($version)").Replace("%%HASH32%%", $hash32).Replace("%%HASH64%%", $hash64) | Out-File '.\tools\chocolateyinstall.ps1';
       # Create chocolatey package
       choco pack;
