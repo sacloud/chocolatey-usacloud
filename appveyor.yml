@@ -7,6 +7,10 @@
 
 version: 0.5.0.{build}
 
+environment:
+  CHOCO_API_KEY:
+    secure: 53zj0CRv8S/heDM1pmY/NYXDD+mwfYJcZHwpJMrOFgAwoC+ffPNRVjF0xQiA9vKy
+
 install:
   # Install Git
   - git clone https://github.com/sacloud/chocolatey-usacloud
@@ -64,3 +68,6 @@ deploy_script:
       Push-AppveyorArtifact '.\usacloud.nuspec'
       # Push chocolateyinstall file
       Push-AppveyorArtifact '.\tools\chocolateyinstall.ps1'
+      # Add Chocolatey ApiKey
+      #choco apikey --key ${env:CHOCO_API_KEY} --source https://push.chocolatey.org/
+      #choco push $nupkgName --source https://push.chocolatey.org/
