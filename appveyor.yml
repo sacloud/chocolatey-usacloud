@@ -51,7 +51,7 @@ deploy_script:
       # Replace vlaues
       Set-Location -Path .\usacloud;
       (Get-Content '.\usacloud.nuspec' -Raw).Replace("<version>__VERSION__</version>", "<version>$($appVeyorVersion)</version>") | Out-File '.\usacloud.nuspec';
-      (Get-Content '.\tools\chocolateyinstall.ps1' -Raw).Replace("__VERSION__", "v$($version)").Replace("%%HASH32%%", $hash32).Replace("%%HASH64%%", $hash64) | Out-File '.\tools\chocolateyinstall.ps1';
+      (Get-Content '.\tools\chocolateyinstall.ps1' -Raw).Replace("__VERSION__", "v$($version)").Replace("__HASH32__", $hash32).Replace("__HASH64__", $hash64) | Out-File '.\tools\chocolateyinstall.ps1';
       # Create chocolatey package
       choco pack;
       # Check Install
@@ -60,3 +60,7 @@ deploy_script:
       # Push nupkg file
       $nupkgName        = (Get-ChildItem * -Include *.nupkg).Name;
       Push-AppveyorArtifact $nupkgName;
+      # Push nuspec file
+      Push-AppveyorArtifact '.\usacloud.nuspec'
+      # Push chocolateyinstall file
+      Push-AppveyorArtifact '.\tools\chocolateyinstall.ps1'
