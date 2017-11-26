@@ -17,7 +17,7 @@
     <licenseUrl>https://github.com/sacloud/usacloud/blob/master/LICENSE.txt</licenseUrl>
     <docsUrl>https://sacloud.github.io/usacloud//</docsUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <packageSourceUrl>https://github.com/sacloud/chocolatey</packageSourceUrl>
+    <packageSourceUrl>https://github.com/sacloud/chocolatey-usacloud</packageSourceUrl>
     <!--<mailingListUrl></mailingListUrl>-->
     <!--<bugTrackerUrl></bugTrackerUrl>-->
     <tags>sakuracloud cli</tags>
