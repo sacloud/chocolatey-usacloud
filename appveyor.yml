@@ -12,9 +12,11 @@ install:
 build_script:
   - ps: |
       $version          = ((Invoke-RestMethod https://api.github.com/repos/sacloud/usacloud/releases/latest)[0] -split ";" | Select-String "tag_name=").ToString().Trim().Replace("tag_name=v", "");
-      $appVeyorVersion  = $version + ${env:APPVEYOR_BUILD_VERSION};
-      echo "usacloud current version Ver." + $version;
-      echo "package version Ver." + $appVeyorVersion;
+      $appVeyorVersion  = $version + "." + ${env:APPVEYOR_BUILD_VERSION};
+      $tmp              = "usacloud current version Ver." + $version;
+      echo $tmp;
+      $tmp              = "package version Ver." + $appVeyorVersion;
+      echo $tmp;
       $url32            = 'https://github.com/sacloud/usacloud/releases/download/v' + $version + '/usacloud_windows-386.zip';
       $url64            = 'https://github.com/sacloud/usacloud/releases/download/v' + $version + '/usacloud_windows-amd64.zip';
       Invoke-WebRequest $url32 -OutFile .\x32.zip;
