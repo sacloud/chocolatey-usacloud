@@ -33,6 +33,7 @@ test_script:
       $packName = 'usacloud';
       choco install $packName -s .\ -f;
       usacloud --version;
+      cuninst $packName;
 
 artifacts:
   - path: '.\usacloud\*.nupkg'

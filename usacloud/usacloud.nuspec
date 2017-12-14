@@ -15,7 +15,7 @@
     <iconUrl>https://cdn.rawgit.com/sacloud/images/1fe15a73/usacloud_logo.svg</iconUrl>
     <copyright>Kazumichi Yamamoto (@yamamoto-febc)</copyright>
     <licenseUrl>https://github.com/sacloud/usacloud/blob/master/LICENSE.txt</licenseUrl>
-    <docsUrl>https://sacloud.github.io/usacloud//</docsUrl>
+    <docsUrl>https://sacloud.github.io/usacloud/</docsUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <packageSourceUrl>https://github.com/sacloud/chocolatey-usacloud</packageSourceUrl>
     <!--<mailingListUrl></mailingListUrl>-->
