@@ -3,6 +3,14 @@
 
 version: '{build}'
 
+branches:
+  only:
+    - master
+
+skip_branch_with_pr: true
+
+max_jobs: 1
+
 environment:
   CHOCO_API_KEY:
     secure: 53zj0CRv8S/heDM1pmY/NYXDD+mwfYJcZHwpJMrOFgAwoC+ffPNRVjF0xQiA9vKy
