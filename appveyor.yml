@@ -3,6 +3,10 @@
 
 version: '{build}'
 
+environment:
+  CHOCO_API_KEY:
+    secure: 53zj0CRv8S/heDM1pmY/NYXDD+mwfYJcZHwpJMrOFgAwoC+ffPNRVjF0xQiA9vKy
+
 install:
   - ps: |
       Get-CimInstance win32_operatingsystem -Property Caption, OSArchitecture, Version | fl Caption, OSArchitecture, Version;
@@ -40,7 +44,7 @@ artifacts:
   - path: '.\usacloud\tools\*.ps1'
   - path: '.\usacloud\usacloud.nuspec'
 
-# deploy_script:
-#   - ps: |
-#       choco apikey --key ${env:CHOCO_API_KEY} --source https://push.chocolatey.org/
-#       choco push $nupkgName --source https://push.chocolatey.org/
+deploy_script:
+  - ps: |
+      choco apikey --key ${env:CHOCO_API_KEY} --source https://push.chocolatey.org/
+      choco push $nupkgName --source https://push.chocolatey.org/
