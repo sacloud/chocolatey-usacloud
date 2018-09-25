@@ -21,6 +21,7 @@ build_script:
   - ps: |
       $version          = ((Invoke-RestMethod https://api.github.com/repos/sacloud/usacloud/releases/latest)[0] -split ";" | Select-String "tag_name=").ToString().Trim().Replace("tag_name=v", "");
       $appVeyorVersion  = $version + "." + ${env:APPVEYOR_BUILD_VERSION};
+      Update-AppveyorBuild -Version $appVeyorVersion
       $tmp              = "usacloud current version Ver." + $version;
       echo $tmp;
       $tmp              = "package version Ver." + $appVeyorVersion;
