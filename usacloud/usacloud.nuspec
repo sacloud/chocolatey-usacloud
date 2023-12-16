@@ -23,7 +23,7 @@
     <tags>sakuracloud cli</tags>
     <summary>usacloud</summary>
     <description>
-# EN
+# Description
   - "usacloud" is a CLI client for Sakura Cloud.
 
 ## Major features
@@ -31,27 +31,10 @@
   - Support for cross-platform version (Windows / macOS / Linux) It can also be executed with ARM.
   - Single binary implemented in Go language. Installation method is only binary copy. (yum / apt / brew is also supported)
   - Supports SSH / SCP / SFTP / VNC etc. only with "binary".
-
-----
-
-# JP
-  - "usacloud"は、さくらクラウド用のCLIクライアントです。
-
-## 主な特徴
-  - さくらクラウドの最新機能に追随。請求情報やオブジェクトストレージ、ウェブアクセラレータなども対応済み
-  - クロスプラットフォーム(Windows/macOS/Linux)サポート。ARMでも動作可能。
-  - Go言語で実装されたシングルバイナリ、インストールはバイナリをコピーするだけ(yum/apt/brewもサポート)
-  - SSH/SCP/SFTP/VNCなどをバイナリ単体でサポート
     </description>
     <releaseNotes>
-# EN
+# ReleaseNotes
   - For details, please check CHANGELOG (Japanese) of GitHub.
-  - https://github.com/sacloud/usacloud/releases
-
-----
-
-# JP
-  - 詳しくは、GitHubのCHANGELOG(日本語)をご確認ください。
   - https://github.com/sacloud/usacloud/releases
     </releaseNotes>
     <!-- =============================== -->      

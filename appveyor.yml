@@ -1,5 +1,5 @@
 # AppVeyor file
-#   for Terraform Provider Sakuracloud
+#   for usacloud
 
 version: '{build}'
 
@@ -22,21 +22,30 @@ install:
 
 build_script:
   - ps: |
-      $version          = ((Invoke-RestMethod https://api.github.com/repos/sacloud/usacloud/releases/latest)[0] -split ";" | Select-String "tag_name=").ToString().Trim().Replace("tag_name=v", "");
-      $appVeyorVersion  = $version + "." + ${env:APPVEYOR_BUILD_VERSION};
-      $tmp              = "usacloud current version Ver." + $version;
-      echo $tmp;
-      $tmp              = "package version Ver." + $appVeyorVersion;
-      echo $tmp;
-      $url32            = 'https://github.com/sacloud/usacloud/releases/download/v' + $version + '/usacloud_windows-386.zip';
-      $url64            = 'https://github.com/sacloud/usacloud/releases/download/v' + $version + '/usacloud_windows-amd64.zip';
+      $version = ((Invoke-RestMethod https://api.github.com/repos/sacloud/usacloud/releases/latest)[0] -split ";" | Select-String "tag_name=").ToString().Trim().Replace("tag_name=v", "");
+      $appVeyorVersion = "${version}.${env:APPVEYOR_BUILD_VERSION}";
+      echo "usacloud current version ${version} / package version ${appVeyorVersion}";
+      $url32 = "https://github.com/sacloud/usacloud/releases/download/v${version}/usacloud_windows-386.zip";
+      echo $url32;
+      $url64 = "https://github.com/sacloud/usacloud/releases/download/v${version}/usacloud_windows-amd64.zip";
+      echo $url64;
       Invoke-WebRequest $url32 -OutFile .\x32.zip;
       Invoke-WebRequest $url64 -OutFile .\x64.zip;
-      $hash32           = (Get-FileHash .\x32.zip -Algorithm SHA512).Hash;
-      $hash64           = (Get-FileHash .\x64.zip -Algorithm SHA512).Hash;
+      $hash32 = (Get-FileHash .\x32.zip -Algorithm SHA512).Hash;
+      echo $hash32;
+      $hash64 = (Get-FileHash .\x64.zip -Algorithm SHA512).Hash;
+      echo $hash64;
       Set-Location -Path .\usacloud;
-      (Get-Content '.\usacloud.nuspec' -Raw).Replace("<version>__VERSION__</version>", "<version>$($appVeyorVersion)</version>") | Out-File '.\usacloud.nuspec';
-      (Get-Content '.\tools\chocolateyinstall.ps1' -Raw).Replace("__VERSION__", "v$($version)").Replace("__HASH32__", $hash32).Replace("__HASH64__", $hash64) | Out-File '.\tools\chocolateyinstall.ps1';
+      (Get-Content '.\usacloud.nuspec' -Raw).Replace("__VERSION__", $appVeyorVersion) | Out-File '.\usacloud.nuspec' -Encoding utf8;
+      echo "replace usacloud.nuspec";
+      echo ".";
+      Get-Content '.\usacloud.nuspec'
+      echo ".";
+      (Get-Content '.\tools\chocolateyinstall.ps1' -Raw).Replace("__VERSION__", "v$version").Replace("__HASH32__", $hash32).Replace("__HASH64__", $hash64) | Out-File '.\tools\chocolateyinstall.ps1' -Encoding utf8;
+      echo "replace chocolateyinstall.ps1";
+      echo ".";
+      Get-Content '.\tools\chocolateyinstall.ps1'
+      echo ".";
       choco pack;
 
 test_script:
@@ -44,7 +53,7 @@ test_script:
       $packName = 'usacloud';
       choco install $packName -s .\ -f;
       usacloud --version;
-      cuninst $packName;
+      choco uninstall $packName;
 
 artifacts:
   - path: '.\usacloud\*.nupkg'
