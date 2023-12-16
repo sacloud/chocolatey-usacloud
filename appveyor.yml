@@ -1,5 +1,5 @@
 # AppVeyor file
-#   for Terraform Provider Sakuracloud
+#   for usacloud
 
 version: '{build}'
 
