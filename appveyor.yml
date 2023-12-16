@@ -24,11 +24,12 @@ build_script:
   - ps: |
       $version = ((Invoke-RestMethod https://api.github.com/repos/sacloud/usacloud/releases/latest)[0] -split ";" | Select-String "tag_name=").ToString().Trim().Replace("tag_name=v", "");
       $appVeyorVersion = "${version}.${env:APPVEYOR_BUILD_VERSION}";
+      echo "usacloud current version Ver.${version} / package version Ver.${appVeyorVersion}";
+      $url32 = "https://github.com/sacloud/usacloud/releases/download/v${version}/usacloud_windows-386.zip";
+      $url64 = "https://github.com/sacloud/usacloud/releases/download/v${version}/usacloud_windows-amd64.zip";
+      echo $url32
+      echo $url64
 
-#      echo "usacloud current version Ver.${version}";
-#      echo "package version Ver.${appVeyorVersion}";
-#      $url32 = "https://github.com/sacloud/usacloud/releases/download/v${version}/usacloud_windows-386.zip";
-#      $url64 = "https://github.com/sacloud/usacloud/releases/download/v${version}/usacloud_windows-amd64.zip";
 #      Invoke-WebRequest $url32 -OutFile .\x32.zip;
 #      Invoke-WebRequest $url64 -OutFile .\x64.zip;
 #      $hash32 = (Get-FileHash .\x32.zip -Algorithm SHA512).Hash;
