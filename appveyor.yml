@@ -38,8 +38,14 @@ build_script:
       Set-Location -Path .\usacloud;
       (Get-Content '.\usacloud.nuspec' -Raw).Replace("__VERSION__", $appVeyorVersion) | Out-File '.\usacloud.nuspec';
       echo "replace usacloud.nuspec";
+      echo ".";
+      Get-Content '.\usacloud.nuspec'
+      echo ".";
       (Get-Content '.\tools\chocolateyinstall.ps1' -Raw).Replace("__VERSION__", "v$version").Replace("__HASH32__", $hash32).Replace("__HASH64__", $hash64) | Out-File '.\tools\chocolateyinstall.ps1';
       echo "replace chocolateyinstall.ps1";
+      echo ".";
+      Get-Content '.\tools\chocolateyinstall.ps1'
+      echo ".";
       choco pack;
 
 test_script:
