@@ -36,12 +36,12 @@ build_script:
       $hash64 = (Get-FileHash .\x64.zip -Algorithm SHA512).Hash;
       echo $hash64;
       Set-Location -Path .\usacloud;
-      (Get-Content '.\usacloud.nuspec' -Raw).Replace("__VERSION__", $appVeyorVersion) | Out-File '.\usacloud.nuspec';
+      (Get-Content '.\usacloud.nuspec' -Raw).Replace("__VERSION__", $appVeyorVersion) | Out-File '.\usacloud.nuspec' -Encoding utf8;
       echo "replace usacloud.nuspec";
       echo ".";
       Get-Content '.\usacloud.nuspec'
       echo ".";
-      (Get-Content '.\tools\chocolateyinstall.ps1' -Raw).Replace("__VERSION__", "v$version").Replace("__HASH32__", $hash32).Replace("__HASH64__", $hash64) | Out-File '.\tools\chocolateyinstall.ps1';
+      (Get-Content '.\tools\chocolateyinstall.ps1' -Raw).Replace("__VERSION__", "v$version").Replace("__HASH32__", $hash32).Replace("__HASH64__", $hash64) | Out-File '.\tools\chocolateyinstall.ps1' -Encoding utf8;
       echo "replace chocolateyinstall.ps1";
       echo ".";
       Get-Content '.\tools\chocolateyinstall.ps1'
