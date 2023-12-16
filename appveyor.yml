@@ -29,9 +29,9 @@ build_script:
       echo $url32
       $url64 = "https://github.com/sacloud/usacloud/releases/download/v${version}/usacloud_windows-amd64.zip";
       echo $url64
+      Invoke-WebRequest $url32 -OutFile .\x32.zip;
+      Invoke-WebRequest $url64 -OutFile .\x64.zip;
 
-#      Invoke-WebRequest $url32 -OutFile .\x32.zip;
-#      Invoke-WebRequest $url64 -OutFile .\x64.zip;
 #      $hash32 = (Get-FileHash .\x32.zip -Algorithm SHA512).Hash;
 #      $hash64 = (Get-FileHash .\x64.zip -Algorithm SHA512).Hash;
 #      Set-Location -Path .\usacloud;
