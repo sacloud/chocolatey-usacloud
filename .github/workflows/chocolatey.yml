@@ -8,6 +8,12 @@ on:
     branches:
       - master
   workflow_dispatch:
+    inputs:
+      force:
+        description: "既存バージョンのチェックをスキップして強制的にビルド・アップロードする"
+        required: false
+        type: boolean
+        default: false
 
 concurrency:
   group: chocolatey-publish
@@ -58,6 +64,13 @@ jobs:
         shell: pwsh
         run: |
           echo "[INFO] Chocolatey に登録済みのバージョンを確認します（審査中を含む）..."
+          $force = "${{ github.event.inputs.force }}"
+          if ($force -eq "true") {
+            echo "[WARN] 強制実行モードが有効です。"
+            echo "[INFO] バージョンチェックをスキップします。"
+            echo "skip=false" >> $env:GITHUB_OUTPUT
+            return
+          }
           $version = "${{ steps.version.outputs.version }}"
           try {
             # OData API で審査中（moderation）のパッケージも含めて全バージョンを取得
