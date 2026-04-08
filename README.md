@@ -2,7 +2,7 @@
 
 [usacloud](https://github.com/sacloud/usacloud)（さくらのクラウドCLIクライアント）の[Chocolatey](https://community.chocolatey.org/packages/usacloud)パッケージです。
 
-[![Build status](https://ci.appveyor.com/api/projects/status/lgfa6wffrrqe256k/branch/master?svg=true)](https://ci.appveyor.com/project/223n/chocolatey-usacloud/branch/master)
+[![Chocolatey Package](https://github.com/sacloud/chocolatey-usacloud/actions/workflows/chocolatey.yml/badge.svg)](https://github.com/sacloud/chocolatey-usacloud/actions/workflows/chocolatey.yml)
 
 ## インストール
 
@@ -24,21 +24,21 @@ choco uninstall usacloud
 
 ## CI/CD
 
-AppVeyorによる自動ビルド・配信を行っています。
+GitHub Actionsによる自動ビルド・配信を行っています。
 
 ### 処理の流れ
 
 1. GitHub APIから[sacloud/usacloud](https://github.com/sacloud/usacloud)の最新リリースバージョンを取得
-2. Chocolatey上の現行バージョンと比較し、同一であればスキップ
+2. Chocolatey上の登録済みバージョン（審査中を含む）と比較し、同一であればスキップ
 3. Windows 32bit/64bitのzipをダウンロードしSHA512ハッシュを算出
 4. テンプレートファイルのプレースホルダーを実際の値に置換
-5. `choco pack` で `.nupkg` を生成
+5. `choco pack`で`.nupkg`を生成
 6. ローカルインストールテスト（`choco install` → `usacloud --version` → `choco uninstall`）
 7. テスト成功後、Chocolateyへ自動push
 
 ### 定時ビルド
 
-AppVeyorのスケジュールビルドにより、毎日定時にusacloudの新バージョンを確認しています。
+GitHub Actionsのスケジュール実行により、毎日UTC 0:00（JST 9:00）にusacloudの新バージョンを確認しています。
 
 新バージョンが検出された場合のみビルド・配信が実行されます。
 
@@ -75,18 +75,18 @@ choco uninstall usacloud
 
 ## リポジトリ構成
 
-| ファイル                                  | 説明                       |
-| ----------------------------------------- | -------------------------- |
-| `usacloud/usacloud.nuspec`                | Chocolateyパッケージ定義   |
-| `usacloud/tools/chocolateyinstall.ps1`    | インストールスクリプト     |
-| `usacloud/tools/chocolateyuninstall.ps1`  | アンインストールスクリプト |
-| `appveyor.yml`                            | AppVeyor CI設定            |
+| ファイル                                 | 説明                       |
+|------------------------------------------|----------------------------|
+| `usacloud/usacloud.nuspec`               | Chocolateyパッケージ定義   |
+| `usacloud/tools/chocolateyinstall.ps1`   | インストールスクリプト     |
+| `usacloud/tools/chocolateyuninstall.ps1` | アンインストールスクリプト |
+| `.github/workflows/chocolatey.yml`       | GitHub Actions CI/CD設定   |
 
 ## 関連リンク
 
 - [usacloud](https://github.com/sacloud/usacloud) - さくらのクラウドCLIクライアント本体
-- [usacloud ドキュメント](https://docs.usacloud.jp/usacloud/)
-- [Chocolatey パッケージページ](https://community.chocolatey.org/packages/usacloud)
+- [usacloudドキュメント](https://docs.usacloud.jp/usacloud/)
+- [Chocolateyパッケージページ](https://community.chocolatey.org/packages/usacloud)
 
 ## ライセンス
 
