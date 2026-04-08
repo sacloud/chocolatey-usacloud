@@ -146,12 +146,12 @@ jobs:
           Set-Location -Path .\usacloud
 
           (Get-Content '.\usacloud.nuspec' -Raw).Replace("__VERSION__", $packageVersion) |
-            Out-File '.\usacloud.nuspec' -Encoding utf8
+            Out-File '.\usacloud.nuspec' -Encoding utf8NoBOM
           echo "[INFO] --- usacloud.nuspec ---"
           Get-Content '.\usacloud.nuspec'
 
           (Get-Content '.\tools\chocolateyinstall.ps1' -Raw).Replace("__VERSION__", "v$version").Replace("__HASH32__", $hash32).Replace("__HASH64__", $hash64) |
-            Out-File '.\tools\chocolateyinstall.ps1' -Encoding utf8
+            Out-File '.\tools\chocolateyinstall.ps1' -Encoding utf8NoBOM
           echo "[INFO] --- chocolateyinstall.ps1 ---"
           Get-Content '.\tools\chocolateyinstall.ps1'
 
