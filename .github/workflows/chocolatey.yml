@@ -1,0 +1,192 @@
+name: Chocolatey パッケージの作成とアップロード
+
+on:
+  schedule:
+    # 毎日 UTC 0:00 (JST 9:00) に実行
+    - cron: "0 0 * * *"
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: chocolatey-publish
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: パッケージのビルドと配信
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Chocolatey のインストールまたはアップグレード
+        shell: pwsh
+        run: |
+          echo "[INFO] Chocolateyがインストール済みかどうかを確認しています..."
+          if (Get-Command choco -ErrorAction SilentlyContinue) {
+            echo "[INFO] Chocolateyを検出しました！"
+            echo "[INFO] アップグレードします..."
+            choco upgrade chocolatey -y
+          } else {
+            echo "[INFO] Chocolateyが見つかりません。"
+            echo "[INFO] インストールします..."
+            Set-ExecutionPolicy Bypass -Scope Process -Force
+            [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+            Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+          }
+          echo "[INFO] Chocolateyのバージョンを確認します..."
+          choco -v
+          echo "[INFO] Chocolateyのインストールまたはアップグレードが完了しました！"
+
+      - name: usacloud の最新バージョンを取得
+        id: version
+        shell: pwsh
+        run: |
+          echo "[INFO] usacloudの最新リリース情報を取得します..."
+          $release = Invoke-RestMethod -Uri "https://api.github.com/repos/sacloud/usacloud/releases/latest"
+          $version = $release.tag_name -replace "^v", ""
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+          echo "[INFO] usacloudの最新バージョンを確認しました！"
+          echo "[INFO] Version: $version"
+
+      - name: Chocolatey 上のバージョンを確認（審査中を含む）
+        id: check
+        shell: pwsh
+        run: |
+          echo "[INFO] Chocolatey に登録済みのバージョンを確認します（審査中を含む）..."
+          $version = "${{ steps.version.outputs.version }}"
+          try {
+            # OData API で審査中（moderation）のパッケージも含めて全バージョンを取得
+            $apiUrl = "https://community.chocolatey.org/api/v2/FindPackagesById()?id='usacloud'"
+            $response = Invoke-RestMethod -Uri $apiUrl
+            if ($response) {
+              $versions = $response | ForEach-Object {
+                $_.properties.Version
+              }
+              echo "[INFO] Chocolatey 登録済みバージョン一覧:"
+              $versions | ForEach-Object { echo "  - $_" }
+
+              $matched = $versions | Where-Object { $_ -like "$version.*" }
+              if ($matched) {
+                echo "[WARN] バージョン $version は、すでに Chocolatey に登録済みです（公開済みまたは審査中）。"
+                echo "[WARN] スキップします。"
+                echo "skip=true" >> $env:GITHUB_OUTPUT
+                return
+              }
+            }
+          } catch {
+            echo "[ERROR] Chocolatey API でのバージョン確認に失敗しました: $_"
+            echo "[INFO] フォールバック: choco search で公開済みバージョンのみ確認します..."
+            try {
+              $chocoSearch = choco search usacloud --exact --limit-output 2>$null
+              if ($chocoSearch) {
+                $chocoVersion = ($chocoSearch -split '\|')[1]
+                echo "[INFO] Chocolatey 公開済みバージョン: $chocoVersion"
+                if ($chocoVersion -like "$version.*") {
+                  echo "[WARN] バージョン $version は、すでに Chocolatey で公開済みです。"
+                  echo "[WARN] スキップします。"
+                  echo "skip=true" >> $env:GITHUB_OUTPUT
+                  return
+                }
+              }
+            } catch {
+              echo "[ERROR] フォールバックも失敗しました。"
+              echo "[INFO] ビルドを続行します。"
+            }
+          }
+          echo "skip=false" >> $env:GITHUB_OUTPUT
+
+      - name: バイナリのダウンロードとハッシュ算出
+        if: steps.check.outputs.skip != 'true'
+        id: hash
+        shell: pwsh
+        run: |
+          echo "[INFO] usacloud本体のダウンロードとハッシュ値の計算を行います..."
+          $version = "${{ steps.version.outputs.version }}"
+
+          $url32 = "https://github.com/sacloud/usacloud/releases/download/v${version}/usacloud_windows-386.zip"
+          $url64 = "https://github.com/sacloud/usacloud/releases/download/v${version}/usacloud_windows-amd64.zip"
+
+          echo "[INFO] 32bit版をダウンロード中..."
+          echo "[INFO] URL: $url32"
+          Invoke-WebRequest $url32 -OutFile .\x32.zip
+          echo "[INFO] 32bit版のダウンロードを完了しました！"
+
+          echo "[INFO] 64bit版をダウンロード中..."
+          echo "[INFO] URL: $url64"
+          Invoke-WebRequest $url64 -OutFile .\x64.zip
+          echo "[INFO] 64bit版のダウンロードを完了しました！"
+
+          echo "[INFO] ハッシュ値を確認中..."
+          $hash32 = (Get-FileHash .\x32.zip -Algorithm SHA512).Hash
+          $hash64 = (Get-FileHash .\x64.zip -Algorithm SHA512).Hash
+          echo "[INFO] SHA512 (32bit): $hash32"
+          echo "[INFO] SHA512 (64bit): $hash64"
+
+          echo "hash32=$hash32" >> $env:GITHUB_OUTPUT
+          echo "hash64=$hash64" >> $env:GITHUB_OUTPUT
+
+          echo "[INFO] ハッシュ値の計算が完了しました！"
+
+      - name: パッケージのビルド
+        if: steps.check.outputs.skip != 'true'
+        shell: pwsh
+        run: |
+          echo "[INFO] パッケージをビルドします..."
+
+          $version = "${{ steps.version.outputs.version }}"
+          $packageVersion = "${version}.${{ github.run_number }}"
+          $hash32 = "${{ steps.hash.outputs.hash32 }}"
+          $hash64 = "${{ steps.hash.outputs.hash64 }}"
+
+          Set-Location -Path .\usacloud
+
+          (Get-Content '.\usacloud.nuspec' -Raw).Replace("__VERSION__", $packageVersion) |
+            Out-File '.\usacloud.nuspec' -Encoding utf8
+          echo "[INFO] --- usacloud.nuspec ---"
+          Get-Content '.\usacloud.nuspec'
+
+          (Get-Content '.\tools\chocolateyinstall.ps1' -Raw).Replace("__VERSION__", "v$version").Replace("__HASH32__", $hash32).Replace("__HASH64__", $hash64) |
+            Out-File '.\tools\chocolateyinstall.ps1' -Encoding utf8
+          echo "[INFO] --- chocolateyinstall.ps1 ---"
+          Get-Content '.\tools\chocolateyinstall.ps1'
+
+          choco pack
+          echo "[INFO] パッケージのビルドが完了しました！"
+
+      - name: パッケージのテスト
+        if: steps.check.outputs.skip != 'true'
+        shell: pwsh
+        run: |
+          echo "[INFO] パッケージのテストを開始します..."
+          Set-Location -Path .\usacloud
+          choco install usacloud -s .\ -f
+          usacloud --version
+          choco uninstall usacloud
+          echo "[INFO] パッケージのテストが完了しました！"
+
+      - name: Chocolatey へプッシュ
+        if: steps.check.outputs.skip != 'true'
+        shell: pwsh
+        env:
+          CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
+        run: |
+          echo "[INFO] パッケージをChocolateyにアップロードします..."
+          $nupkg = Get-ChildItem .\usacloud\*.nupkg | Select-Object -First 1
+          echo "[INFO] $($nupkg.Name)をChocolateyにアップロードしています..."
+          choco push $nupkg.FullName --source https://push.chocolatey.org/ --api-key $env:CHOCO_API_KEY
+          echo "[INFO] パッケージのアップロードが完了しました！"
+
+      - name: 成果物のアップロード
+        if: steps.check.outputs.skip != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: chocolatey-package
+          path: |
+            usacloud/*.nupkg
+            usacloud/tools/*.ps1
+            usacloud/usacloud.nuspec

@@ -11,17 +11,17 @@
     <title>usacloud (Install)</title>
     <authors>Kazumichi Yamamoto (@yamamoto-febc)</authors>
     <projectUrl>https://github.com/sacloud/usacloud</projectUrl>
-    <!--<projectSourceUrl>https://github.com/sacloud/usacloud</projectSourceUrl>-->
+    <projectSourceUrl>https://github.com/sacloud/usacloud</projectSourceUrl>
     <iconUrl>https://cdn.rawgit.com/sacloud/images/1fe15a73/usacloud_logo.svg</iconUrl>
     <copyright>Kazumichi Yamamoto (@yamamoto-febc)</copyright>
-    <licenseUrl>https://github.com/sacloud/usacloud/blob/master/LICENSE.txt</licenseUrl>
+    <license type="expression">Apache-2.0</license>
     <docsUrl>https://docs.usacloud.jp/usacloud/</docsUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <packageSourceUrl>https://github.com/sacloud/chocolatey-usacloud</packageSourceUrl>
     <!--<mailingListUrl></mailingListUrl>-->
-    <!--<bugTrackerUrl></bugTrackerUrl>-->
-    <tags>sakuracloud cli</tags>
-    <summary>usacloud</summary>
+    <bugTrackerUrl>https://github.com/sacloud/chocolatey-usacloud/issues</bugTrackerUrl>
+    <tags>sakuracloud cli sacloud iaas cloud sakura</tags>
+    <summary>CLI client for Sakura Cloud</summary>
     <description>
 # Description
   - "usacloud" is a CLI client for Sakura Cloud.
