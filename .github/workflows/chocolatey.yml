@@ -27,7 +27,7 @@ jobs:
     name: パッケージのビルドと配信
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Chocolatey のインストールまたはアップグレード
         shell: pwsh
@@ -197,7 +197,7 @@ jobs:
 
       - name: 成果物のアップロード
         if: steps.check.outputs.skip != 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: chocolatey-package
           path: |
