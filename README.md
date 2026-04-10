@@ -66,7 +66,9 @@ $hash64 = (Get-FileHash .\x64.zip -Algorithm SHA512).Hash
 # プレースホルダーの置換
 cd usacloud
 (Get-Content '.\usacloud.nuspec' -Raw).Replace("__VERSION__", $version) | Out-File '.\usacloud.nuspec' -Encoding utf8
-(Get-Content '.\tools\chocolateyinstall.ps1' -Raw).Replace("__VERSION__", "v$version").Replace("__HASH32__", $hash32).Replace("__HASH64__", $hash64) | Out-File '.\tools\chocolateyinstall.ps1' -Encoding utf8
+# Chocolatey は Windows PowerShell 5.1 で ps1 を実行するため、BOM付きUTF-8が必要
+$content = (Get-Content '.\tools\chocolateyinstall.ps1' -Raw).Replace("__VERSION__", "v$version").Replace("__HASH32__", $hash32).Replace("__HASH64__", $hash64)
+[System.IO.File]::WriteAllText((Resolve-Path '.\tools\chocolateyinstall.ps1').Path, $content, [System.Text.UTF8Encoding]::new($true))
 
 # パッケージ作成とテスト
 choco pack
